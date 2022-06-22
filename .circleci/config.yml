@@ -5,7 +5,19 @@ version: 2.1
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/2.0/configuration-reference/#jobs
 jobs:
-  
+  create_and_deploy_front_end:
+    docker:
+      - image: amazon/aws-cli
+      steps:
+        - checkout
+        - run:
+            name: Executr bucket.yml - Creating CloudFormation Stack
+            command: |
+              aws cloudformation deploy \
+              --template-file bucket.yml \
+              --stack-name stack-create-bucket-${CIRCLE_WORKFLOW_ID:0:7} \
+              --parameter-overrides MyBucketName="mybucket-${CIRCLE_WORKFLOW_ID:0:7}"
+        - run: aws s3 sync . s3://mybucket-${CIRCLE_WORKFLOW_ID:0:7} --delete
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
