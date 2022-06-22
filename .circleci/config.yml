@@ -24,4 +24,4 @@ jobs:
 workflows:
   myworkflow:
     jobs:
-      - create
+      - create_and_deploy_front_end
